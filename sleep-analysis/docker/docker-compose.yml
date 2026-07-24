@@ -1,0 +1,264 @@
+version: "3.8"
+
+networks:
+  bigdata-net:
+    driver: bridge
+
+volumes:
+  namenode-data:
+  datanode1-data:
+  datanode2-data:
+  datanode3-data:
+  hive-pg-data:
+  es-data:
+  mysql-data:
+
+services:
+  # ---------------- MySQL (Spring Boot 服务层数据库) ----------------
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    hostname: mysql
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root123
+      - MYSQL_DATABASE=sleep_dashboard
+    volumes:
+      - mysql-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - bigdata-net
+
+  # ---------------- HDFS ----------------
+  namenode:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    container_name: namenode
+    hostname: namenode
+    restart: always
+    environment:
+      - CLUSTER_NAME=sleep-bigdata
+    env_file:
+      - ./hadoop.env
+    volumes:
+      - namenode-data:/hadoop/dfs/name
+    ports:
+      - "9870:9870"   # HDFS Web UI
+      - "9000:9000"   # fs.defaultFS
+    networks:
+      - bigdata-net
+
+  datanode1:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode1
+    hostname: datanode1
+    restart: always
+    depends_on:
+      - namenode
+    env_file:
+      - ./hadoop.env
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870"
+    volumes:
+      - datanode1-data:/hadoop/dfs/data
+    ports:
+      - "9864:9864"   # DataNode 1 Web UI
+    networks:
+      - bigdata-net
+
+  datanode2:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode2
+    hostname: datanode2
+    restart: always
+    depends_on:
+      - namenode
+    env_file:
+      - ./hadoop.env
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870"
+    volumes:
+      - datanode2-data:/hadoop/dfs/data
+    ports:
+      - "9865:9864"   # DataNode 2 Web UI
+    networks:
+      - bigdata-net
+
+  datanode3:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode3
+    hostname: datanode3
+    restart: always
+    depends_on:
+      - namenode
+    env_file:
+      - ./hadoop.env
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870"
+    volumes:
+      - datanode3-data:/hadoop/dfs/data
+    ports:
+      - "9866:9864"   # DataNode 3 Web UI
+    networks:
+      - bigdata-net
+
+  # ---------------- Hive ----------------
+  hive-metastore-postgresql:
+    image: bde2020/hive-metastore-postgresql:2.3.0
+    container_name: hive-metastore-postgresql
+    hostname: hive-metastore-postgresql
+    restart: always
+    volumes:
+      - hive-pg-data:/var/lib/postgresql/data
+    networks:
+      - bigdata-net
+
+  hive-metastore:
+    image: bde2020/hive:2.3.2-postgresql-metastore
+    container_name: hive-metastore
+    hostname: hive-metastore
+    restart: always
+    env_file:
+      - ./hadoop.env
+    command: /opt/hive/bin/hive --service metastore
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870 datanode1:9864 hive-metastore-postgresql:5432"
+    depends_on:
+      - namenode
+      - datanode1
+      - hive-metastore-postgresql
+    ports:
+      - "9083:9083"   # Thrift metastore, Spark 通过这个端口连接
+    networks:
+      - bigdata-net
+
+  hive-server:
+    image: bde2020/hive:2.3.2-postgresql-metastore
+    container_name: hive-server
+    hostname: hive-server
+    restart: always
+    env_file:
+      - ./hadoop.env
+    environment:
+      HIVE_SERVER2_THRIFT_PORT: 10000
+      SERVICE_PRECONDITION: "hive-metastore:9083"
+    depends_on:
+      - hive-metastore
+    ports:
+      - "10000:10000"  # HiveServer2 JDBC (Spring Boot 通过这个端口连 Hive)
+      - "10002:10002"  # HiveServer2 Web UI
+    networks:
+      - bigdata-net
+
+  # ---------------- Spark (Standalone) ----------------
+  spark-master:
+    image: bitnamilegacy/spark:3.5.6-debian-12-r0
+    container_name: spark-master
+    hostname: spark-master
+    restart: always
+    environment:
+      - SPARK_MODE=master
+      - SPARK_DAEMON_MEMORY=512m
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+    volumes:
+      - ./spark-conf/hive-site.xml:/opt/bitnami/spark/conf/hive-site.xml:ro
+      - ./spark-conf/core-site.xml:/opt/bitnami/spark/conf/core-site.xml:ro
+      - ../spark-apps:/opt/spark-apps
+      # 将 CSV 数据文件目录挂载进去，Spark 脚本用 /opt/spark-data/smartwatch_sleep_dataset.csv 读取
+      - ..:/opt/spark-data:ro
+    ports:
+      - "7077:7077"   # Spark Master 端口 (spark-submit --master spark://spark-master:7077)
+      - "8080:8080"   # Spark Master Web UI
+    depends_on:
+      - hive-metastore
+    networks:
+      - bigdata-net
+
+  spark-worker-1:
+    image: bitnamilegacy/spark:3.5.6-debian-12-r0
+    container_name: spark-worker-1
+    hostname: spark-worker-1
+    restart: always
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      - SPARK_DAEMON_MEMORY=512m
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_WORKER_CORES=2
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+    volumes:
+      - ./spark-conf/hive-site.xml:/opt/bitnami/spark/conf/hive-site.xml:ro
+      - ./spark-conf/core-site.xml:/opt/bitnami/spark/conf/core-site.xml:ro
+      - ../spark-apps:/opt/spark-apps
+      - ..:/opt/spark-data:ro
+    ports:
+      - "8081:8081"   # Spark Worker 1 Web UI
+    depends_on:
+      - spark-master
+    networks:
+      - bigdata-net
+
+  spark-worker-2:
+    image: bitnamilegacy/spark:3.5.6-debian-12-r0
+    container_name: spark-worker-2
+    hostname: spark-worker-2
+    restart: always
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      - SPARK_DAEMON_MEMORY=512m
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_WORKER_CORES=2
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+    volumes:
+      - ./spark-conf/hive-site.xml:/opt/bitnami/spark/conf/hive-site.xml:ro
+      - ./spark-conf/core-site.xml:/opt/bitnami/spark/conf/core-site.xml:ro
+      - ../spark-apps:/opt/spark-apps
+      - ..:/opt/spark-data:ro
+    ports:
+      - "8082:8081"   # Spark Worker 2 Web UI
+    depends_on:
+      - spark-master
+    networks:
+      - bigdata-net
+
+  # ---------------- Elasticsearch ----------------
+  elasticsearch:
+    image: elasticsearch:7.17.9
+    container_name: elasticsearch
+    hostname: elasticsearch
+    restart: always
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - bigdata-net
+
+  kibana:
+    image: kibana:7.17.9
+    container_name: kibana
+    hostname: kibana
+    restart: always
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    ports:
+      - "5601:5601"
+    networks:
+      - bigdata-net

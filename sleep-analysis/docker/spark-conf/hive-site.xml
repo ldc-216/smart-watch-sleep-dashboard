@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+    Spark 容器内 hive-site.xml
+    让 Spark 通过 Hive Metastore Thrift 接口读写 Hive 表，
+    与 docker-compose 中 hive-metastore 容器名和端口一致。
+-->
+<configuration>
+  <!-- Metastore 地址（docker 网络内可直接用服务名） -->
+  <property>
+    <name>hive.metastore.uris</name>
+    <value>thrift://hive-metastore:9083</value>
+  </property>
+
+  <!-- 不把 schema 版本不匹配当作致命错误 -->
+  <property>
+    <name>hive.metastore.schema.verification</name>
+    <value>false</value>
+  </property>
+
+  <!-- 允许 Spark 执行动态分区写入 -->
+  <property>
+    <name>hive.exec.dynamic.partition</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>hive.exec.dynamic.partition.mode</name>
+    <value>nonstrict</value>
+  </property>
+
+  <!-- 默认数据库 -->
+  <property>
+    <name>hive.default.database</name>
+    <value>sleep_dw</value>
+  </property>
+</configuration>

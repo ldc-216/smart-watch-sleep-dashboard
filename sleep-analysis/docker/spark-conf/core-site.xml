@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+    Spark 容器内 core-site.xml
+    告诉 Spark 默认文件系统指向 HDFS namenode，
+    与 docker-compose 中 namenode 容器名和端口一致。
+-->
+<configuration>
+  <property>
+    <name>fs.defaultFS</name>
+    <value>hdfs://namenode:9000</value>
+  </property>
+  <property>
+    <name>hadoop.http.staticuser.user</name>
+    <value>root</value>
+  </property>
+</configuration>

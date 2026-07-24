@@ -1,0 +1,35 @@
+[
+  {
+    "user_id": "user_00001",
+    "date_recorded": "2026-07-15",
+    "sleep_score": 85,
+    "sleep_efficiency_pct": 92.5,
+    "sleep_latency_minutes": 15.0,
+    "heart_rate_mean_bpm": 64.0,
+    "spo2_min_pct": 96.0,
+    "snore_events": 0,
+    "apnea_risk_score": 5,
+    "insomnia_flag": 0,
+    "stress_score": 25,
+    "medication_flag": 0
+  },
+  {
+    "user_id": "user_09999",
+    "date_recorded": "2026-07-15",
+    "gender": "female",
+    "age": 28,
+    "region": "亚洲",
+    "device_model": "SleepSense S2",
+    "bmi": 21.5,
+    "sleep_score": 88,
+    "sleep_efficiency_pct": 95.0,
+    "sleep_latency_minutes": 10.0,
+    "heart_rate_mean_bpm": 60.0,
+    "spo2_min_pct": 98.0,
+    "snore_events": 0,
+    "apnea_risk_score": 3,
+    "insomnia_flag": 0,
+    "stress_score": 18,
+    "medication_flag": 0
+  }
+]

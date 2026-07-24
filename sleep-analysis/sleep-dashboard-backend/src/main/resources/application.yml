@@ -1,0 +1,43 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: sleep-dashboard-backend
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/sleep_dashboard?useSSL=false&serverTimezone=UTC&characterEncoding=utf8&allowPublicKeyRetrieval=true
+    username: root
+    password: root123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      idle-timeout: 30000
+      connection-timeout: 20000
+      max-lifetime: 1800000
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl   # 生产环境使用 SLF4J 异步记录，关闭 stdout 打印以提升性能
+
+# 自定义配置：Elasticsearch 和 PMML 模型路径
+sleep-dashboard:
+  elasticsearch:
+    host: localhost
+    port: 9200
+    scheme: http
+  ml:
+    pmml-model-path: classpath:models/sleep_score_rf.pmml
+  ai:
+    llm-url: https://api.deepseek.com/chat/completions
+    llm-key: sk-e97597d5bfbb44509d2496681d9d58a8
+    model-name: deepseek-chat
+
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html

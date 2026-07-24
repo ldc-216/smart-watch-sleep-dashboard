@@ -1,0 +1,22 @@
+# 依赖
+node_modules/
+
+# 构建产物
+dist/
+target/
+build/
+out/
+*.class
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# 操作系统 / 编辑器
+.DS_Store
+Thumbs.db
+*.log
+
+# 本地环境变量
+.env

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NOVA AI · 品牌识别系统</title>
+<style>
+  :root{
+    --deep:#0B2C7A; --bright:#2D6CFF; --cyan:#38BDF8;
+    --ink:#0B1A3A; --line:#E4E9F2; --bg:#F5F7FB; --muted:#5B6B86;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Inter,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:48px 32px 80px}
+  /* Header */
+  .hero{background:linear-gradient(135deg,#2D6CFF 0%,#0B2C7A 100%);
+        border-radius:28px;padding:56px 48px;color:#fff;position:relative;overflow:hidden}
+  .hero::after{content:"";position:absolute;right:-80px;top:-80px;width:320px;height:320px;
+        background:radial-gradient(circle,rgba(56,189,248,.35),transparent 70%);border-radius:50%}
+  .hero .eyebrow{font-size:14px;letter-spacing:3px;text-transform:uppercase;opacity:.85;font-weight:600}
+  .hero h1{font-size:46px;font-weight:800;margin:12px 0 6px;letter-spacing:1px}
+  .hero p{font-size:17px;opacity:.92;max-width:560px}
+  .hero .mark{margin-top:28px}
+  section{margin-top:56px}
+  h2{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--bright);font-weight:700;margin-bottom:18px}
+  h2 span{display:block;font-size:24px;letter-spacing:0;color:var(--ink);text-transform:none;margin-top:6px;font-weight:800}
+  .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:28px}
+  /* Logo grid */
+  .logo-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .show{display:flex;flex-direction:column;align-items:center;justify-content:center;
+        border-radius:14px;padding:32px 16px;gap:14px}
+  .show .label{font-size:13px;color:var(--muted);font-weight:600}
+  .show.dark{background:var(--ink)}
+  .show.light{background:#fff;border:1px solid var(--line)}
+  .show.tint{background:#EAF1FF}
+  /* Color */
+  .swatches{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+  .sw{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .sw .chip{height:96px}
+  .sw .meta{padding:14px 14px 16px}
+  .sw .role{font-size:12px;font-weight:700;color:var(--bright);letter-spacing:.5px}
+  .sw .name{font-size:15px;font-weight:700;margin:4px 0 8px}
+  .sw .val{font-size:12.5px;color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;line-height:1.7}
+  /* Type */
+  .type-row{display:flex;align-items:baseline;gap:20px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .type-row:last-child{border-bottom:none}
+  .type-row .sample{font-size:34px;font-weight:800;min-width:200px}
+  .type-row .info{font-size:14px;color:var(--muted)}
+  /* Spec */
+  .spec-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .spec-grid .card h3{font-size:17px;margin-bottom:10px}
+  .spec-grid .card p{font-size:14.5px;color:var(--muted)}
+  .spec-grid .card .big{font-size:30px;font-weight:800;color:var(--ink);margin-bottom:6px}
+  /* Do / Don't */
+  .dd{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .dd ul{list-style:none;margin-top:8px}
+  .dd li{padding:10px 0 10px 30px;position:relative;font-size:14.5px}
+  .dd li::before{position:absolute;left:0;top:9px;font-weight:800}
+  .do li::before{content:"✓";color:#16A34A}
+  .dont{border-color:#FBCFE8}
+  .dont li::before{content:"✕";color:#DC2626}
+  footer{margin-top:60px;text-align:center;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="eyebrow">Brand Identity Guidelines</div>
+    <h1>NOVA AI</h1>
+    <p>科技风格品牌识别系统 · 主色深蓝，适配 AI 产品。简洁、现代、高辨识度。</p>
+    <div class="mark">
+      <svg width="120" height="120" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="g1" x1="36" y1="18" x2="204" y2="222" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#2D6CFF"/><stop offset="1" stop-color="#0B2C7A"/>
+          </linearGradient>
+        </defs>
+        <rect width="240" height="240" rx="56" fill="url(#g1)"/>
+        <path d="M84 172 L120 72 L156 172" stroke="#fff" stroke-width="17" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <rect x="95" y="132" width="50" height="15" rx="7.5" fill="#fff"/>
+        <circle cx="120" cy="48" r="11" fill="#fff"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- LOGO VARIATIONS -->
+  <section>
+    <h2>01 / Logo 标志<span>标志组合与适用场景</span></h2>
+    <div class="card">
+      <div class="logo-grid">
+        <div class="show dark">
+          <svg width="132" height="132" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+            <defs><linearGradient id="g2" x1="36" y1="18" x2="204" y2="222" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2D6CFF"/><stop offset="1" stop-color="#0B2C7A"/></linearGradient></defs>
+            <rect width="240" height="240" rx="56" fill="url(#g2)"/>
+            <path d="M84 172 L120 72 L156 172" stroke="#fff" stroke-width="17" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <rect x="95" y="132" width="50" height="15" rx="7.5" fill="#fff"/>
+            <circle cx="120" cy="48" r="11" fill="#fff"/>
+          </svg>
+          <div class="label">图标 · 深色背景</div>
+        </div>
+        <div class="show light">
+          <svg width="132" height="132" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+            <rect width="240" height="240" rx="56" fill="#0B2C7A"/>
+            <path d="M84 172 L120 72 L156 172" stroke="#fff" stroke-width="17" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <rect x="95" y="132" width="50" height="15" rx="7.5" fill="#fff"/>
+            <circle cx="120" cy="48" r="11" fill="#fff"/>
+          </svg>
+          <div class="label">图标 · 纯深蓝单色</div>
+        </div>
+        <div class="show tint">
+          <svg width="320" height="128" viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
+            <defs><linearGradient id="g3" x1="36" y1="18" x2="204" y2="222" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2D6CFF"/><stop offset="1" stop-color="#0B2C7A"/></linearGradient></defs>
+            <rect width="240" height="240" rx="56" fill="url(#g3)"/>
+            <path d="M84 172 L120 72 L156 172" stroke="#fff" stroke-width="17" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <rect x="95" y="132" width="50" height="15" rx="7.5" fill="#fff"/>
+            <circle cx="120" cy="48" r="11" fill="#fff"/>
+            <text x="284" y="120" font-family="Inter,sans-serif" font-size="62" font-weight="800" fill="#0B1A3A">NOVA</text>
+            <text x="500" y="120" font-family="Inter,sans-serif" font-size="62" font-weight="800" fill="#2D6CFF">AI</text>
+          </svg>
+          <div class="label">水平组合标 · 浅色背景</div>
+        </div>
+        <div class="show dark">
+          <svg width="320" height="128" viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
+            <rect width="240" height="240" rx="56" fill="#fff"/>
+            <path d="M84 172 L120 72 L156 172" stroke="#2D6CFF" stroke-width="17" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <rect x="95" y="132" width="50" height="15" rx="7.5" fill="#2D6CFF"/>
+            <circle cx="120" cy="48" r="11" fill="#2D6CFF"/>
+            <text x="284" y="120" font-family="Inter,sans-serif" font-size="62" font-weight="800" fill="#fff">NOVA</text>
+            <text x="500" y="120" font-family="Inter,sans-serif" font-size="62" font-weight="800" fill="#fff">AI</text>
+          </svg>
+          <div class="label">反白组合标 · 深色背景</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLOR -->
+  <section>
+    <h2>02 / Color 色彩<span>标准色值与角色</span></h2>
+    <div class="card">
+      <div class="swatches">
+        <div class="sw"><div class="chip" style="background:#0B2C7A"></div>
+          <div class="meta"><div class="role">PRIMARY</div><div class="name">深蓝</div>
+          <div class="val">HEX #0B2C7A<br>RGB 11 44 122<br>CMYK 91 64 0 52</div></div></div>
+        <div class="sw"><div class="chip" style="background:#2D6CFF"></div>
+          <div class="meta"><div class="role">ACCENT</div><div class="name">亮蓝</div>
+          <div class="val">HEX #2D6CFF<br>RGB 45 108 255<br>CMYK 82 58 0 0</div></div></div>
+        <div class="sw"><div class="chip" style="background:#38BDF8"></div>
+          <div class="meta"><div class="role">SECONDARY</div><div class="name">天青</div>
+          <div class="val">HEX #38BDF8<br>RGB 56 189 248<br>CMYK 77 24 0 3</div></div></div>
+        <div class="sw"><div class="chip" style="background:#0B1A3A"></div>
+          <div class="meta"><div class="role">INK</div><div class="name">墨蓝</div>
+          <div class="val">HEX #0B1A3A<br>RGB 11 26 58<br>CMYK 81 55 0 77</div></div></div>
+        <div class="sw"><div class="chip" style="background:#FFFFFF;border-bottom:1px solid var(--line)"></div>
+          <div class="meta"><div class="role">NEUTRAL</div><div class="name">纯白</div>
+          <div class="val">HEX #FFFFFF<br>RGB 255 255 255<br>CMYK 0 0 0 0</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TYPE -->
+  <section>
+    <h2>03 / Typography 字体<span>字族与字重规范</span></h2>
+    <div class="card">
+      <div class="type-row"><div class="sample" style="color:#0B1A3A">NOVA AI</div>
+        <div class="info">标题 / 标志字 · Inter / PingFang SC · Weight 800<br>字间距 +1，体现科技硬朗感</div></div>
+      <div class="type-row"><div class="sample" style="color:#2D6CFF;font-weight:700">智能 · 未来</div>
+        <div class="info">中文正文 · PingFang SC / 微软雅黑 · Weight 600<br>与拉丁字族保持同字重层级</div></div>
+      <div class="type-row"><div class="sample" style="color:#5B6B86;font-weight:500;font-size:24px">Body text 14–16px</div>
+        <div class="info">辅助说明 · Weight 400–500<br>最小可读字号 12px（仅限注释）</div></div>
+    </div>
+  </section>
+
+  <!-- SPEC -->
+  <section>
+    <h2>04 / Usage 使用规范<span>留白、最小尺寸与安全区</span></h2>
+    <div class="spec-grid">
+      <div class="card"><h3>Clear Space 安全留白</h3>
+        <div class="big">≥ 图标半径</div>
+        <p>标志四周保留不小于「图标圆角半径」的空白；图文组合标以字母高度为间距基准，禁止其他元素侵入。</p></div>
+      <div class="card"><h3>Minimum Size 最小尺寸</h3>
+        <div class="big">图标 32px</div>
+        <p>数字界面中图标边长不小于 32px；组合标宽度不小于 160px，确保「Ai」笔画与字标清晰可辨。</p></div>
+      <div class="card"><h3>On Color 底色适配</h3>
+        <div class="big">深蓝 / 浅色</div>
+        <p>深色底用反白标；浅色底用深蓝或亮蓝标。避免将深蓝标放在低对比灰底上。</p></div>
+      <div class="card"><h3>Alignment 对齐</h3>
+        <div class="big">左 / 居中</div>
+        <p>组合标默认左对齐或水平居中，图标与字标基线对齐，禁止拉伸、倾斜或旋转。</p></div>
+    </div>
+  </section>
+
+  <!-- DO / DON'T -->
+  <section>
+    <h2>05 / Rules 禁忌<span>正确与错误用法</span></h2>
+    <div class="dd">
+      <div class="card do"><h3>✓ 推荐做法</h3>
+        <ul>
+          <li>使用提供的标准渐变或单色深蓝版本</li>
+          <li>保持足够留白，让标志成为视觉焦点</li>
+          <li>深色背景使用反白标志</li>
+          <li>缩放时整体等比例，保持笔画粗细一致</li>
+        </ul></div>
+      <div class="card dont"><h3>✕ 禁止做法</h3>
+        <ul>
+          <li>不要更改标志主色或渐变角度</li>
+          <li>不要给标志添加投影、描边或特效</li>
+          <li>不要拉伸、压扁、旋转或倾斜标志</li>
+          <li>不要将标志与过多装饰元素混排</li>
+        </ul></div>
+    </div>
+  </section>
+
+  <footer>NOVA AI 为示意品牌名，字标可按实际产品名称替换 · 标准色值以本手册为准</footer>
+</div>
+</body>
+</html>
